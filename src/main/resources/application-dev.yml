@@ -1,0 +1,34 @@
+spring:
+  mvc:
+    view:
+      prefix: /html
+      suffix: .html
+  datasource:
+    name: druidDataSource
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      url: jdbc:mysql://localhost:3306/blog_test?useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&useSSL=false
+      driver-class-name: com.mysql.jdbc.Driver
+      username: root
+      password: root
+      initialSize: 5
+      minIdle: 5
+      maxActive: 20
+      maxWait: 60000
+      timeBetweenEvictionRunsMillis: 60000
+      minEvictableIdleTimeMillis: 300000
+      validationQuery: SELECT 1
+      testWhileIdle: true
+      testOnBorrow: true
+      testOnReturn: false
+      poolPreparedStatements: true
+      maxPoolPreparedStatementPerConnectionSize: 20
+      connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+
+mybatis:
+  type-aliases-package: cn.sxh.sxh_blog.entity         # 所有实体类所在包路径
+  mapper-locations: classpath:mapper/*.xml             # mapper映射文件
+logging:
+  level:
+    cn.sxh.sxh_blog.dao: debug
+
