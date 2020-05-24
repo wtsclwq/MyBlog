@@ -14,7 +14,19 @@ layui.config({
 			currentUser.initFormCheck();
 		},
 		initData: function() {
-			$("input[name='nickname']").val(sessionStorage.getItem("nickname"));
+            form.render();
+            //用户数据
+            $.ajax({
+                url: '/admin/user/current',
+                type: 'get',
+                success: function(result, status, xhr) {
+                    layer.closeAll('loading');
+                    form.val("my_passwd", result.data)
+                    $("input[name='id']").val(result.data.id);
+                    $("input[name='password']").val(null);
+                    form.render();
+                }
+            });
 		},
 		initSubmit: function() {
 			//表单监听提交
@@ -32,7 +44,7 @@ layui.config({
 				}
 				var user_data = JSON.stringify(data.field);
 				$.ajax({
-					url: common.IP + '/api/blog-admin/sysUser/current/pwd',
+					url: '/admin/user/current/pwd',
 					type: 'PUT',
 					data: user_data,
 					success: function(result, status, xhr) {

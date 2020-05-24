@@ -2,12 +2,11 @@ layui.config({
 	base: '/js/admin/' //静态资源所在路径
 }).extend({
 	common: 'common' //公共模块
-}).use(['common', 'upload', 'laydate'], function() {
+}).use(['common', 'laydate'], function() {
 	var common = layui.common,
 		layer = common.layer,
 		$ = common.$,
 		form = common.form,
-		upload = layui.upload,
 		laydate = layui.laydate;
 	var currentUser = {
 		init: function() {
@@ -17,22 +16,23 @@ layui.config({
 				max: 0,
 				format: 'yyyy-MM-dd HH:mm:ss'
 			});
+
 			currentUser.initData();
 			currentUser.initSubmit();
-			currentUser.initUpload();
 			currentUser.initFormCheck();
 		},
 		initData: function() {
-			common.showDictRadio("sex", "sex");
 			form.render();
 			//用户数据
 			$.ajax({
-				url: common.IP + '/api/blog-oauth2/currentUser',
+				url: '/admin/user/current',
+				type: 'get',
 				success: function(result, status, xhr) {
 					layer.closeAll('loading');
-					form.val("my_base_info", result)
-					$('#headimg').attr('src', result.headimgurl)
-					$("input[name='sex'][value='" + result.sex + "']").attr("checked", "checked")
+					form.val("my_base_info", result.data)
+					$("input[name='id']").val(result.data.id);
+					$("input[name=upModel][value='0']").attr("checked", result.data.sex == 0 ? true : false);
+					$("input[name=upModel][value='1']").attr("checked", result.data.sex == 1 ? true : false);
 					form.render();
 				}
 			});
@@ -40,13 +40,9 @@ layui.config({
 		initSubmit: function() {
 			//表单监听提交
 			form.on('submit(formDemo)', function(data) {
-				$("button[lay-filter='formDemo']").attr('disabled', true);
-				setTimeout(function() {
-					$("button[lay-filter='formDemo']").attr('disabled', false);
-				}, 10000);
 				var user_data = JSON.stringify(data.field);
 				$.ajax({
-					url: common.IP + '/api/blog-admin/sysUser/current',
+					url: '/admin/user/current',
 					type: 'PUT',
 					data: user_data,
 					async: false,
@@ -96,38 +92,6 @@ layui.config({
 				}
 			});
 		},
-		initUpload: function() {
-			//上传头像实例
-			var uploadInst = upload.render({
-				elem: '#uploadheadimg',
-				size: 5120,
-				number: 1,
-				url: '/upload/',
-				before: function(obj) {
-					layer.load();
-				},
-				done: function(res) {
-					$('#headimgurl').val(res.data.src)
-					$('#headimg').attr('src', res.data.src);
-					layer.closeAll('loading');
-				},
-				error: function(index, upload) {
-					layer.msg('上传异常', {
-						icon: 2,
-						time: 1300
-					}, function() {
-						layer.closeAll('loading');
-						layer.msg('重新上传？', {
-							time: 20000, //20s后自动关闭
-							btn: ['是', '否'],
-							btn1: function() {
-								upload()
-							}
-						});
-					});
-				}
-			});
-		}
 	};
 	$(function() {
 		currentUser.init();

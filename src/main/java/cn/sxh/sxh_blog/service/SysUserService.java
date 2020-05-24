@@ -23,4 +23,6 @@ public interface SysUserService {
 
     PublicResultJson updateCurrentInfo(SysUser user);
 
+    PublicResultJson getCurrentUserInfo();
+
 }

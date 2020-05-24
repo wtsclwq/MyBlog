@@ -25,7 +25,6 @@ public class UserLogoutSuccessHandler implements LogoutSuccessHandler {
         String json = new Gson().toJson(jsonData);
         httpServletResponse.setContentType("application/json;charset=utf-8");
         PrintWriter out = httpServletResponse.getWriter();
-
         out.write(json);
         out.flush();
         out.close();

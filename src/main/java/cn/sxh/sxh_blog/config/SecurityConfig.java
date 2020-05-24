@@ -64,7 +64,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()//登录页面不需要验证
                 .and()
                 .logout()
-                .logoutSuccessHandler(userLogoutSuccessHandler)//登出处理
+                //.logoutSuccessHandler(userLogoutSuccessHandler)//登出处理
+                .logoutSuccessUrl("/login_page")
                 .permitAll()
                 .and()
                 .csrf().disable()

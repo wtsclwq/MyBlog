@@ -35,7 +35,6 @@ layui.config({
 				success: function(result, status, xhr) {
 					layer.closeAll('loading');
 					form.val("admin_base_info", result.data);
-					console.log("niuzi"+JSON.stringify(result.data));
 					$("input[name='id']").val(result.data.id);
 					$("input[name=upModel][value='0']").attr("checked", result.data.sex == 0 ? true : false);
 					$("input[name=upModel][value='1']").attr("checked", result.data.sex == 1 ? true : false);
@@ -95,7 +94,6 @@ layui.config({
 				});
 				user_data.roleIds = roleIds;
 				user_data = JSON.stringify(user_data)
-				console.log("niuzi"+user_data);
 				$.ajax({
 					url: '/admin/user',
 					type: 'put',

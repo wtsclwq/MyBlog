@@ -9,12 +9,14 @@ import cn.sxh.sxh_blog.entity.*;
 import cn.sxh.sxh_blog.service.SysUserService;
 import cn.sxh.sxh_blog.util.LayuiTableResult;
 import cn.sxh.sxh_blog.util.PublicResultJson;
+import cn.sxh.sxh_blog.util.UserUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -158,8 +160,22 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     @Override
+    public PublicResultJson getCurrentUserInfo() {
+        UserDetails userDetails = UserUtil.getCurrentUser();
+        SysUserCriteria example = new SysUserCriteria();
+        SysUserCriteria.Criteria criteria = example.createCriteria();
+        assert userDetails != null;
+        criteria.andUsernameEqualTo(userDetails.getUsername());
+        SysUser result = sysUserDAO.selectByExample(example).get(0);
+        SysUserSelectDto selectDto = new SysUserSelectDto();
+        BeanUtils.copyProperties(result,selectDto);
+        return new PublicResultJson(HttpStatus.OK.value(),HttpStatus.OK.getReasonPhrase(),selectDto);
+    }
+
+    @Override
     public PublicResultJson updateCurrentInfo(SysUser user) {
-        return null;
+        sysUserDAO.updateByPrimaryKeySelective(user);
+        return new PublicResultJson(HttpStatus.OK.value(), HttpStatus.OK.getReasonPhrase(), user);
     }
 
 
